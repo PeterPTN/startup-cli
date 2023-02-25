@@ -1,6 +1,5 @@
-import java.util.*;
-
 import enums.Direction;
+import java.util.*;
 
 // Encapsulation omitted for testing purposes
 public class GameHelper {
@@ -25,6 +24,8 @@ public class GameHelper {
     int attempts = 0;
     boolean success = false;
 
+    // DESC: Alternative vertical or horizontal layout
+    // Depending on startupCount
     startupCount++;
     int increment = getIncrement();
 
@@ -33,7 +34,7 @@ public class GameHelper {
 
       for (int i = 0; i < startupCoords.length; i++) {
         startupCoords[i] = location;
-        location += location;
+        location += increment;
       }
 
       if (startupFits(startupCoords, increment)) {
@@ -49,22 +50,23 @@ public class GameHelper {
 
   // Startup fits
   boolean startupFits(int[] startupCoords, int increment) {
+    int firstLocation = startupCoords[0];
     int finalLocation = startupCoords[startupCoords.length - 1];
     Direction horizontal = Direction.HORIZONTAL_INCREMENT;
 
     if (increment == horizontal.getIncrement()) {
-      return (
-        calcRowFromIndex(startupCoords[0]) == calcRowFromIndex(finalLocation)
-      );
+      // DESC: Check horizontal startup does not go over right edge
+      // eg. 30/7 == 32/7 == true (4 and 4 - rounds down)
+      // but 26/7 == 28/7 == false (3 and 4)
+      return calcRowFromIndex(firstLocation) == calcRowFromIndex(finalLocation);
     } else {
+      //DESC: Checks vertical row does not exceed past bottom of grid
       return finalLocation < GRID_SIZE;
     }
   }
 
   // Coords Available
   boolean coordsAvailable(int[] startupCoords) {
-    System.out.println(startupCoords);
-
     for (int coord : startupCoords) {
       if (grid[coord] != 0) {
         // System.out.println("position: " + coord + " already taken.");
@@ -76,6 +78,8 @@ public class GameHelper {
 
   // Save position to grid
   void savePositionToGrid(int[] startupCoords) {
+    // DESC: Mark grid as occupied
+    // Eg. grid[30],[31],[32] == 1
     for (int index : startupCoords) {
       grid[index] = 1;
     }
@@ -96,6 +100,10 @@ public class GameHelper {
   // Get alpha coords from index
   String getAlphaCoordsFromIndex(int index) {
     int row = calcRowFromIndex(index);
+    // DESC: If vertical column returns same remainder
+    // Thus shares the same Alpha
+    // If horizontal remainder will be incremented by 1
+    // Thus changing Alpha
     int column = index % GRID_LENGTH;
     String letter = ALPHABET.substring(column, column + 1);
     return letter + row;

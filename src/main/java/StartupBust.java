@@ -1,6 +1,14 @@
 
 import java.util.ArrayList;
 
+// Notice there is no complex data structure, everything is granular
+// What cannot be held inside an existing data structure is further atomised
+
+// Eg. startups ArrayList cannot hold references to the startup itself and its locations
+// Therefore needs its own class
+
+// Designing in OOP is like zooming in from outside-in. Each object has its own innards.
+// Designing in FP is thinking from left-to-right/top-to-bottom. All process.
 public class StartupBust {
 
   private GameHelper helper = new GameHelper();
@@ -25,6 +33,8 @@ public class StartupBust {
     );
     System.out.println("Try to sink them all in the fewest number of guesses");
 
+    // DESC: For each created startup
+    // set its location
     for (Startup startup : startups) {
       ArrayList<String> newLocation = helper.placeStartup(3);
       startup.setLocationCells(newLocation);
@@ -32,8 +42,9 @@ public class StartupBust {
   }
 
   private void startPlaying() {
+    // DESC: While startups is not empty keep running game
     while (!startups.isEmpty()) {
-      String userGuess = helper.getUserInput("Enter a guess");
+      String userGuess = helper.getUserInput("Enter a guess (eg. A4)");
       checkUserGuess(userGuess);
     }
     finishGame();
